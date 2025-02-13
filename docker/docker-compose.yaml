@@ -8,7 +8,7 @@ services:
       - my_network
 
   apache:
-    image: egerin/my_apache:1.0.0
+    image: egerin/my_apache:1.0.1
     container_name: apache
     restart: unless-stopped
     ports: [ "81:80", "444:443" ]
