@@ -1,0 +1,20 @@
+services:
+  nginx:
+    image: egerin/my_nginx:1.0.0
+    container_name: nginx
+    restart: unless-stopped
+    ports: [ "80:80", "443:443" ]
+    networks:
+      - my_network
+
+  apache:
+    image: egerin/my_apache:1.0.0
+    container_name: apache
+    restart: unless-stopped
+    ports: [ "81:80", "444:443" ]
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge

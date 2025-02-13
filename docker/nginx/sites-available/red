@@ -1,0 +1,10 @@
+server {
+
+    listen 81;
+    root /var/www/html/;
+    location =/redblue{
+                proxy_set_header Host $host;
+
+        try_files $uri $uri/ /red.html =404;
+    }
+}

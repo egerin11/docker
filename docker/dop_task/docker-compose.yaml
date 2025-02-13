@@ -1,0 +1,53 @@
+services:
+  nginx:
+    container_name: nginx
+    build:
+      context: ../nginx
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports: [ "80:80", "443:443" ]
+    networks:
+      - my_network
+
+  apache:
+    container_name: apache
+    build:
+      context: ../apache
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports: [ "81:80", "444:443" ]
+    networks:
+      - my_network
+  dop-task:
+    container_name: dop-task
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    volumes:
+      - /home/egerin/trainee/test.log:/etc/nginx/test.log
+    ports: [ "82:80" ]
+    networks:
+      - my_network
+
+  db:
+    image: postgres:latest
+    container_name: db_1
+    restart: unless-stopped
+    env_file:
+      - config/db.env
+    expose:
+      - "5432:5432"
+    volumes:
+
+      - ./init-database.sh:/docker-entrypoint-initdb.d/init-database.sh
+    networks:
+      - my_network
+
+volumes:
+  postgres_data_db1:
+
+
+networks:
+  my_network:
+    driver: bridge

@@ -1,0 +1,64 @@
+log_format upstream_log '[$time_local] $remote_addr to: $upstream_addr: $request';
+
+server {
+listen 8080;
+    root /var/www/html;
+
+    location / {
+        try_files $uri $uri/ /index.html =404;
+}
+location /secondpage{
+        try_files $uri $uri/ /secondpage.html =404;
+
+}
+ location ^~ /secondserver {
+    proxy_pass https://habr.com/ru/articles/478652/;
+    proxy_redirect https://habr.com/ru/articles/478652/ /secondserver;
+    }
+   location /music {
+        root /var/www/html/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        add_header Content-Disposition 'attachment; filename=test.mp3';
+        add_header Content-Type application/octet-stream;
+        add_header Cache-Control no-store;
+        try_files $uri /test.mp3 =404;
+    }
+
+     location ~* \.jpg$ {
+
+    rewrite ^ /image1 redirect;
+}
+
+
+location /cpu{
+  try_files $uri $uri/ /cpu.html =404;
+}
+
+location /image1 {
+    root /var/www/html;
+    image_filter rotate 180;
+    try_files $uri $uri/ /test.jpg =404;
+}
+
+  location ~ \.png$ {
+
+    rewrite ^ /image2 redirect;
+}
+
+location /image2{
+    try_files /screen.png =404;
+}
+location /redblue {
+        proxy_pass http://red_blue/redblue;
+        proxy_set_header Host $host;
+            proxy_set_header X-Target-Server $upstream_addr;
+    access_log /var/log/nginx/upstream.log upstream_log;
+        add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+
+
+    }
+}
+
+
+
