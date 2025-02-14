@@ -1,0 +1,16 @@
+server{
+    server_name apache-docker.zapto.org;
+  listen [::]:443 ssl ipv6only=on; # managed by Certbot
+  listen 443 ssl; # managed by Certbot
+ ssl_certificate /etc/letsencrypt/apache_ssl/fullchain.pem; # managed by Certbot
+ ssl_certificate_key /etc/letsencrypt/apache_ssl/privkey.pem; # managed by Certbot
+ include /etc/letsencrypt/apache_ssl/options-ssl-nginx.conf; # managed by Certbot
+ ssl_dhparam /etc/letsencrypt/apache_ssl/ssl-dhparams.pem; # managed by Certbot
+   location / {
+   proxy_pass https://apache_docker.zapto.org:8443;
+
+
+ }
+
+
+}
