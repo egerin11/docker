@@ -5,7 +5,7 @@ server {
 	listen [::]:80;
 
 
-	server_name nginx-docker.zapto.org;
+	server_name nginx-docker.zapto.org apache-docker.zapto.org;
 
 	return 301 https://$host$request_uri;
 
