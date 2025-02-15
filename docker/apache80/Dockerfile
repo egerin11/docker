@@ -7,6 +7,7 @@ RUN a2enmod ssl rewrite headers
 RUN a2ensite httpd.conf
 COPY index.html /var/www/html/
 RUN echo "Listen 8080" >> /etc/apache2/ports.conf
+RUN echo "<?php phpinfo(); ?>" > /var/www/html/phpinfo.php
 
 EXPOSE 8080 
 

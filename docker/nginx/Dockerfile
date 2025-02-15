@@ -10,9 +10,8 @@ RUN rm -rf /var/www/html/* && \
     rm -rf /etc/nginx/sites-available/*  && \
     rm -rf /etc/nginx/sites-enabled/*
 
-RUN mkdir -p /etc/letsencrypt/ && mkdir -p /etc/letsencrypt/apache_proxy
+RUN mkdir -p /etc/letsencrypt/
 COPY ./ssl/ /etc/letsencrypt/
-
 
 WORKDIR /etc/nginx
 
