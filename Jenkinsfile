@@ -19,7 +19,7 @@ pipeline {
         stage('docker build') {
             steps {
                 sh '''
-                    docker image prune -f  
+                    docker image prune -f || true
                     cd /home/ubuntu/jenkins/workspace/test-github/docker/nginx/
                     docker build --no-cache --build-arg CACHE_INVALIDATE="$(date +%s)" -t egerin/nginx_work:$IMAGE_VERSION .
                     cd /home/ubuntu/jenkins/workspace/test-github   /docker/apache80/
