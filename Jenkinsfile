@@ -20,6 +20,8 @@ pipeline {
                 sh '''
                     cd /home/ubuntu/jenkins/workspace/taska/docker/nginx/
                     docker build -t egerin/nginx_test:$IMAGE_VERSION .
+                    cd /home/ubuntu/jenkins/workspace/taska/docker/apache80/
+                    docker build -t egerin/apache80_test:$IMAGE_VERSION .
                 '''
             }
         }
@@ -30,6 +32,7 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                         sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
                         sh "docker push egerin/nginx_test:$IMAGE_VERSION"
+                        sh "docker push egerin/apache80_test:$IMAGE_VERSION"
                     }
                 }
             }
@@ -48,7 +51,8 @@ pipeline {
                 ssh -o StrictHostKeyChecking=no -i \$SSH_KEY ubuntu@52.87.163.129 '\
                 sudo docker stop \$(sudo docker ps -aq) || true && \
                 sudo docker rm \$(sudo docker ps -aq) || true && \
-                sudo docker run -d -p 443:443 -p 80:80 --name nginx egerin/nginx_test:${IMAGE_VERSION} && \
+                docker run -p 8080:8080 --name apache egerin/apache80_test:${IMAGE_VERSION} && \
+                sudo docker run -p 443:443 -p 80:80 --name nginx egerin/nginx_test:${IMAGE_VERSION} && \
                 exit'
             """
         }
