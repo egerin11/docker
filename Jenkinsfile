@@ -19,9 +19,9 @@
                 steps {
                     sh '''
                         cd /home/ubuntu/jenkins/workspace/taska/docker/nginx/
-                        docker build -t egerin/nginx_test:$IMAGE_VERSION .
+                        docker build  --no-cache -t egerin/nginx_test:$IMAGE_VERSION .
                         cd /home/ubuntu/jenkins/workspace/taska/docker/apache80/
-                        docker build -t egerin/apache80_test:$IMAGE_VERSION .
+                        docker build   --no-cache -t egerin/apache80_test:$IMAGE_VERSION .
                     '''
                 }
             }
