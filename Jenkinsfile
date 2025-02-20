@@ -29,7 +29,7 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                         sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
-                        sh "docker push egerin/dop:$IMAGE_VERSION"
+                        sh "docker push egerin/nginx_test:$IMAGE_VERSION"
                     }
                 }
             }
@@ -48,7 +48,7 @@ pipeline {
                 ssh -o StrictHostKeyChecking=no -i \$SSH_KEY ubuntu@52.87.163.129 '\
                 sudo docker stop \$(sudo docker ps -aq) || true && \
                 sudo docker rm \$(sudo docker ps -aq) || true && \
-                sudo docker run -d -p 80:80 --name nginx egerin/nginx_test:${IMAGE_VERSION} && \
+                sudo docker run -d -p 443:443 -p 80:80 --name nginx egerin/nginx_test:${IMAGE_VERSION} && \
                 exit'
             """
         }
