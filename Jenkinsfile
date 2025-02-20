@@ -65,9 +65,7 @@ pipeline {
                 withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key', keyFileVariable: 'SSH_KEY')]) {
                     sh """
                         ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@44.203.76.36 '\
-                        sudo docker ps -aq | xargs -r sudo docker stop && \
-                        sudo docker ps -aq | xargs -r sudo docker rm && \
-                        sudo docker container prune -f && sudo docker image prune -af || true && \
+                    
                         sudo docker pull egerin/nginx_work:${IMAGE_VERSION} && \
                         sudo docker run -d -p 443:443 -p 80:80 --network my_network --name nginx egerin/nginx_work:${IMAGE_VERSION} && \
                         exit'
