@@ -18,8 +18,8 @@ pipeline {
         stage('docker build') {
             steps {
                 sh '''
-                    cd /home/ubuntu/jenkins/workspace/taska/docker/dop_task/
-                    docker build -t egerin/dop:$IMAGE_VERSION .
+                    cd /home/ubuntu/jenkins/workspace/taska/docker/nginx/
+                    docker build -t egerin/nginx_test:$IMAGE_VERSION .
                 '''
             }
         }
@@ -48,7 +48,7 @@ pipeline {
                 ssh -o StrictHostKeyChecking=no -i \$SSH_KEY ubuntu@52.87.163.129 '\
                 sudo docker stop \$(sudo docker ps -aq) || true && \
                 sudo docker rm \$(sudo docker ps -aq) || true && \
-                sudo docker run -d -p 80:80 --name nginx egerin/dop:${IMAGE_VERSION} && \
+                sudo docker run -d -p 80:80 --name nginx egerin/nginx_test:${IMAGE_VERSION} && \
                 exit'
             """
         }
