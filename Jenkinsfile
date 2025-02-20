@@ -51,7 +51,7 @@ pipeline {
                 ssh -o StrictHostKeyChecking=no -i \$SSH_KEY ubuntu@52.87.163.129 '\
                 sudo docker stop \$(sudo docker ps -aq) || true && \
                 sudo docker rm \$(sudo docker ps -aq) || true && \
-                docker run -p 8080:8080 --name apache egerin/apache80_test:${IMAGE_VERSION} && \
+                docker run  -d -p 8080:8080 --name apache egerin/apache80_test:${IMAGE_VERSION} && \
                 exit'
             """
         }
@@ -64,7 +64,7 @@ stage('deploy containers') {
             sh """
                 ssh -o StrictHostKeyChecking=no -i \$SSH_KEY ubuntu@52.87.163.129 '\
                
-                sudo docker run -p 443:443 -p 80:80 --name nginx egerin/nginx_test:${IMAGE_VERSION} && \
+                sudo docker run -d -p 443:443 -p 80:80 --name nginx egerin/nginx_test:${IMAGE_VERSION} && \
                 exit'
             """
         }
