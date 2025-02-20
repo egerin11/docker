@@ -51,7 +51,6 @@
                     ssh -o StrictHostKeyChecking=no -i \$SSH_KEY ubuntu@52.87.163.129 '\
                     sudo docker stop \$(sudo docker ps -aq) || true && \
                     sudo docker rm \$(sudo docker ps -aq) || true && \
-                    sudo docker rmi -f egerin/nginx_test:${IMAGE_VERSION} egerin/apache80_test:${IMAGE_VERSION} || true'
                     docker network rm my_network || true  && \
                     docker network create --driver bridge my_network &&\
                     docker run  -d -p 8080:8080  --network my_network --name apache egerin/apache80_test:${IMAGE_VERSION} && \
