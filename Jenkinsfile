@@ -44,14 +44,26 @@ pipeline {
             }
         }
         
-        stage('connect to instance') {
-         steps {
+    stage('cleanup containers') {
+    steps {
         withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key', keyFileVariable: 'SSH_KEY')]) {
             sh """
                 ssh -o StrictHostKeyChecking=no -i \$SSH_KEY ubuntu@52.87.163.129 '\
                 sudo docker stop \$(sudo docker ps -aq) || true && \
                 sudo docker rm \$(sudo docker ps -aq) || true && \
                 docker run -p 8080:8080 --name apache egerin/apache80_test:${IMAGE_VERSION} && \
+                exit'
+            """
+        }
+    }
+}
+
+stage('deploy containers') {
+    steps {
+        withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key', keyFileVariable: 'SSH_KEY')]) {
+            sh """
+                ssh -o StrictHostKeyChecking=no -i \$SSH_KEY ubuntu@52.87.163.129 '\
+               
                 sudo docker run -p 443:443 -p 80:80 --name nginx egerin/nginx_test:${IMAGE_VERSION} && \
                 exit'
             """
