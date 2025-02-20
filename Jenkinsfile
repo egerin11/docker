@@ -21,7 +21,7 @@
         sh '''
             docker system prune -af  
             cd /home/ubuntu/jenkins/workspace/taska/docker/nginx/
-            docker build --no-cache --build-arg CACHE_INVALIDATE="$(date +%s)" -t egerin/nginx_test:$IMAGE_VERSION .
+            docker build --no-cache --build-arg CACHE_INVALIDATE="$(date +%s)" -t egerin/nginx_work:$IMAGE_VERSION .
             cd /home/ubuntu/jenkins/workspace/taska/docker/apache80/
             docker build --no-cache -t egerin/apache80_test:$IMAGE_VERSION .
         '''
@@ -33,7 +33,7 @@
                     script {
                         withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                             sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
-                            sh "docker push egerin/nginx_test:$IMAGE_VERSION"
+                            sh "docker push egerin/nginx_work:$IMAGE_VERSION"
                             sh "docker push egerin/apache80_test:$IMAGE_VERSION"
                         }
                     }
@@ -69,8 +69,8 @@
                     withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key', keyFileVariable: 'SSH_KEY')]) {
                         sh '''
                             ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@52.87.163.129 '\
-                            sudo docker pull egerin/nginx_test:'${IMAGE_VERSION}' && \
-                            sudo docker run -d -p 443:443 -p 80:80 --network my_network --name nginx egerin/nginx_test:'${IMAGE_VERSION}' && \
+                            sudo docker pull egerin/nginx_work:'${IMAGE_VERSION}' && \
+                            sudo docker run -d -p 443:443 -p 80:80 --network my_network --name nginx egerin/nginx_work:'${IMAGE_VERSION}' && \
                             exit'
                         '''
                     }
