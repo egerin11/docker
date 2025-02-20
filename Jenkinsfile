@@ -20,9 +20,9 @@ pipeline {
             steps {
                 sh '''
                     docker image prune -f  
-                    cd /home/ubuntu/jenkins/workspace/taska/docker/nginx/
+                    cd /home/ubuntu/jenkins/workspace/test-github/docker/nginx/
                     docker build --no-cache --build-arg CACHE_INVALIDATE="$(date +%s)" -t egerin/nginx_work:$IMAGE_VERSION .
-                    cd /home/ubuntu/jenkins/workspace/taska/docker/apache80/
+                    cd /home/ubuntu/jenkins/workspace/test-github   /docker/apache80/
                     docker build --no-cache -t egerin/apache80_test:$IMAGE_VERSION .
                 '''
             }
