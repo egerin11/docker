@@ -8,13 +8,14 @@
         
         stages {
             stage('checkout') {
-                steps {
-                    git branch: 'master',
-                        credentialsId: env.GIT_CREDENTIALS_ID,
-                        url: 'git@github.com:egerin11/docker.git'
-                }
+            steps {
+                cleanWs()
+                git branch: 'master',
+                    credentialsId: env.GIT_CREDENTIALS_ID,
+                    url: 'git@github.com:egerin11/docker.git'
             }
-            
+        }
+        
             stage('docker build') {
                 steps {
                     sh '''
@@ -45,34 +46,35 @@
                 }
             }
             
-  stage('cleanup containers') {
-    steps {
-        withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key', keyFileVariable: 'SSH_KEY')]) {
-            sh '''
-                ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@52.87.163.129 '\
-                sudo docker stop $(sudo docker ps -aq) || true && \
-                sudo docker rm $(sudo docker ps -aq) || true && \
-                sudo docker rmi -f $(sudo docker images -aq) || true && \
-                sudo docker network rm my_network || true  && \
-                sudo docker network create --driver bridge my_network && \
-                sudo docker run  -d -p 8080:8080  --network my_network --name apache egerin/apache80_test:'${IMAGE_VERSION}' && \
-                exit'
-            '''
-        }
-    }
-}
-
-    stage('deploy containers') {
-        steps {
-            withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key', keyFileVariable: 'SSH_KEY')]) {
-                sh '''
-                    ssh -o StrictHostKeyChecking=no -i \$SSH_KEY ubuntu@52.87.163.129 '\
-                
-                    sudo docker run -d -p 443:443 -p 80:80 --network my_network --name nginx egerin/nginx_test:${IMAGE_VERSION} && \
-                    exit'
-                '''
+            stage('cleanup containers') {
+                steps {
+                    withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key', keyFileVariable: 'SSH_KEY')]) {
+                        sh '''
+                            ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@52.87.163.129 '\
+                            sudo docker stop $(sudo docker ps -aq) || true && \
+                            sudo docker rm $(sudo docker ps -aq) || true && \
+                            sudo docker rmi -f $(sudo docker images -aq) || true && \
+                            sudo docker network rm my_network || true && \
+                            sudo docker network create --driver bridge my_network && \
+                            sudo docker pull egerin/apache80_test:'${IMAGE_VERSION}' && \
+                            sudo docker run -d -p 8080:8080 --network my_network --name apache egerin/apache80_test:'${IMAGE_VERSION}' && \
+                            exit'
+                        '''
+                    }
+                }
             }
-        }
-    }
-        }
+
+            stage('deploy containers') {
+                steps {
+                    withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key', keyFileVariable: 'SSH_KEY')]) {
+                        sh '''
+                            ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@52.87.163.129 '\
+                            sudo docker pull egerin/nginx_test:'${IMAGE_VERSION}' && \
+                            sudo docker run -d -p 443:443 -p 80:80 --network my_network --name nginx egerin/nginx_test:'${IMAGE_VERSION}' && \
+                            exit'
+                        '''
+                    }
+                }
+            }
+                    }
     }
