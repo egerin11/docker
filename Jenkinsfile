@@ -41,31 +41,29 @@ pipeline {
                 }
             }
         }
-                
-        stage('cleanup containers') {
-            steps {
-                withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key', keyFileVariable: 'SSH_KEY')]) {
-                    sh '''
-                        ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@44.203.76.36 '\
-                         echo "Using image version: ${IMAGE_VERSION}" && \
-                        sudo docker ps -aq | xargs -r sudo docker stop && \
-                        sudo docker ps -aq | xargs -r sudo docker rm && \
-
-                        sudo docker container prune -f && sudo docker image prune -af || true && \
-                        sudo docker network inspect my_network >/dev/null 2>&1 && sudo docker network rm my_network || true && \
-                        sudo docker network create --driver bridge my_network && \
-                        sudo docker pull egerin/apache80_test:${IMAGE_VERSION} && \
-                        sudo docker run -d -p 8080:8080 --network my_network --name apache egerin/apache80_test:${IMAGE_VERSION} && \
-                        exit'
-                    '''
-                }
-            }
+    stage('cleanup containers') {
+    steps {
+        withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key', keyFileVariable: 'SSH_KEY')]) {
+            sh """
+                ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@44.203.76.36 '\
+                    echo "Using image version: ${IMAGE_VERSION}" && \
+                    sudo docker ps -aq | xargs -r sudo docker stop && \
+                    sudo docker ps -aq | xargs -r sudo docker rm && \
+                    sudo docker container prune -f && sudo docker image prune -af || true && \
+                    sudo docker network inspect my_network >/dev/null 2>&1 && sudo docker network rm my_network || true && \
+                    sudo docker network create --driver bridge my_network && \
+                    sudo docker pull egerin/apache80_test:${IMAGE_VERSION} && \
+                    sudo docker run -d -p 8080:8080 --network my_network --name apache egerin/apache80_test:${IMAGE_VERSION} && \
+                    exit'
+            """
         }
+    }
+}
 
         stage('deploy containers') {
             steps {
                 withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key', keyFileVariable: 'SSH_KEY')]) {
-                    sh '''
+                    sh """
                         ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@44.203.76.36 '\
                         sudo docker ps -aq | xargs -r sudo docker stop && \
                         sudo docker ps -aq | xargs -r sudo docker rm && \
@@ -73,7 +71,7 @@ pipeline {
                         sudo docker pull egerin/nginx_work:${IMAGE_VERSION} && \
                         sudo docker run -d -p 443:443 -p 80:80 --network my_network --name nginx egerin/nginx_work:${IMAGE_VERSION} && \
                         exit'
-                    '''
+                    """
                 }
             }
         }
