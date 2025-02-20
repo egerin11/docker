@@ -18,6 +18,7 @@ WORKDIR /etc/nginx
 COPY nginx.conf .
 
 COPY ./sites-available/ ./sites-available/
+ARG CACHE_INVALIDATE
 COPY media/ /var/www/html/
 COPY load.sh /etc/nginx/
 

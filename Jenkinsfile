@@ -15,18 +15,18 @@
                     url: 'git@github.com:egerin11/docker.git'
             }
         }
-        
-            stage('docker build') {
-                steps {
-                    sh '''
-                        docker rmi -f $(docker images -aq) || true && \
-                        cd /home/ubuntu/jenkins/workspace/taska/docker/nginx/
-                        docker build  --no-cache -t egerin/nginx_test:$IMAGE_VERSION .
-                        cd /home/ubuntu/jenkins/workspace/taska/docker/apache80/
-                        docker build   --no-cache -t egerin/apache80_test:$IMAGE_VERSION .
-                    '''
-                }
-            }
+
+         stage('docker build') {
+    steps {
+        sh '''
+            docker system prune -af  
+            cd /home/ubuntu/jenkins/workspace/taska/docker/nginx/
+            docker build --no-cache --build-arg CACHE_INVALIDATE="$(date +%s)" -t egerin/nginx_test:$IMAGE_VERSION .
+            cd /home/ubuntu/jenkins/workspace/taska/docker/apache80/
+            docker build --no-cache -t egerin/apache80_test:$IMAGE_VERSION .
+        '''
+    }
+}
             
             stage('Deploy Image') {
                 steps {
