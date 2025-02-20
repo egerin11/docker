@@ -47,6 +47,7 @@ pipeline {
                 withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key', keyFileVariable: 'SSH_KEY')]) {
                     sh '''
                         ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@44.203.76.36 '\
+                         echo "Using image version: ${IMAGE_VERSION}" && \
                         sudo docker ps -aq | xargs -r sudo docker stop && \
                         sudo docker ps -aq | xargs -r sudo docker rm && \
 
