@@ -22,7 +22,7 @@ pipeline {
                     docker image prune -f || true
                     cd /home/ubuntu/jenkins/workspace/test-github/docker/nginx/
                     docker build --no-cache --build-arg CACHE_INVALIDATE="$(date +%s)" -t egerin/nginx_work:$IMAGE_VERSION .
-                    cd /home/ubuntu/jenkins/workspace/test-github   /docker/apache80/
+                    cd /home/ubuntu/jenkins/workspace/test-github/docker/apache80/
                     docker build --no-cache -t egerin/apache80_test:$IMAGE_VERSION .
                 '''
             }
