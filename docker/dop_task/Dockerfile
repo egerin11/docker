@@ -3,7 +3,7 @@ RUN apk update && apk add --no-cache nginx &&  apk add  curl
 RUN rm -rf /etc/nginx/http.d/*
 WORKDIR /etc/nginx
 COPY test.sh /etc/nginx/test.sh
-VOLUME ["/etc/nginx/test.log"]
+
 RUN chmod +x /etc/nginx/test.sh
 
 COPY index.html /var/www/html/
