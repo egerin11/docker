@@ -3,7 +3,7 @@
         
         environment {
             GIT_CREDENTIALS_ID = 'github'
-            IMAGE_VERSION = "1.0.${BUILD_NUMBER}"
+            IMAGE_VERSION = "2.0.${BUILD_NUMBER}"
         }
         
         stages {
