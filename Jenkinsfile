@@ -56,7 +56,7 @@
                             sudo docker rmi -f $(sudo docker images -aq) || true && \
                             sudo docker network rm my_network || true && \
                             sudo docker network create --driver bridge my_network && \
-                            sudo docker pull egerin/apache80_test:'${IMAGE_VERSION}' && \
+                            sudo docker pull egerin/apache80_test:$IMAGE_VERSION && \
                             sudo docker run -d -p 8080:8080 --network my_network --name apache egerin/apache80_test:'${IMAGE_VERSION}' && \
                             exit'
                         '''
@@ -69,7 +69,7 @@
                     withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key', keyFileVariable: 'SSH_KEY')]) {
                         sh '''
                             ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@52.87.163.129 '\
-                            sudo docker pull egerin/nginx_work:'${IMAGE_VERSION}' && \
+                            sudo docker pull egerin/nginx_work:$IMAGE_VERSION && \
                             sudo docker run -d -p 443:443 -p 80:80 --network my_network --name nginx egerin/nginx_work:'${IMAGE_VERSION}' && \
                             exit'
                         '''
