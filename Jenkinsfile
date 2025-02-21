@@ -45,7 +45,7 @@ pipeline {
     steps {
         withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key', keyFileVariable: 'SSH_KEY')]) {
             sh """
-                ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@44.203.76.36 '\
+                ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@18.207.208.224 '\
                     echo "Using image version: ${IMAGE_VERSION}" && \
                     sudo docker ps -aq | xargs -r sudo docker stop && \
                     sudo docker ps -aq | xargs -r sudo docker rm && \
@@ -64,7 +64,7 @@ pipeline {
             steps {
                 withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key', keyFileVariable: 'SSH_KEY')]) {
                     sh """
-                        ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@44.203.76.36 '\
+                        ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@18.207.208.224 '\
                     
                         sudo docker pull egerin/nginx_work:${IMAGE_VERSION} && \
                         sudo docker run -d -p 443:443 -p 80:80 --network my_network --name nginx egerin/nginx_work:${IMAGE_VERSION} && \
